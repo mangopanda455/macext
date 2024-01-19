@@ -9,6 +9,10 @@ license = "MIT"
 repository = "https://github.com/mangopanda455/macext"
 documentation = "https://docs.rs/macext"
 homepage = "https://github.com/mangopanda455/macext"
+exclude = [
+	".cargo_vcs_info.json",
+	".gitignore",
+]
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
