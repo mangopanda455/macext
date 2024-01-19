@@ -1,0 +1,19 @@
+[package]
+name = "macext"
+version = "0.1.0"
+edition = "2021"
+description = "Crate for editing mac process memory and finding pid, base address, etc."
+authors = ["Graham Fielding <grahamfielding08@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/mangopanda455/macext"
+documentation = "https://docs.rs/macext"
+homepage = "https://github.com/mangopanda455/macext"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mach2 = "0.4.2"
+process-memory = "0.5.0"
+sysinfo = "0.30.5"
