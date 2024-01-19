@@ -1,9 +1,8 @@
+use core::panic;
 use std::usize;
 use mach2::{vm_types::{vm_address_t, vm_size_t}, port::mach_port_t, traps::{task_for_pid, mach_task_self}, kern_return::KERN_SUCCESS, vm_region::{vm_region_basic_info, VM_REGION_BASIC_INFO_64}, message::mach_msg_type_number_t, vm::mach_vm_region, vm_prot::VM_PROT_EXECUTE};
 use process_memory::{Pid, TryIntoProcessHandle, DataMember, Memory};
 use sysinfo::System;
-use std::time::{Duration, SystemTime};
-use std::thread::sleep;
 
 pub fn get_base_address(pid: i32) -> Option<vm_address_t> {
     unsafe {
@@ -30,7 +29,7 @@ pub fn get_base_address(pid: i32) -> Option<vm_address_t> {
 }
 
 pub fn patch(offsets: &Vec<u64>, base_address: usize, pid: i32, val: u64) {
-    let mut handle = (pid as Pid).try_into_process_handle().unwrap();
+    let handle = (pid as Pid).try_into_process_handle().unwrap();
     let mut current_address = base_address;
     let mut member: DataMember<u64> = DataMember::new(handle);
     for index in 0..offsets.len() {
@@ -38,7 +37,7 @@ pub fn patch(offsets: &Vec<u64>, base_address: usize, pid: i32, val: u64) {
         unsafe {
             match member.read() {
                 Ok(value) => current_address = value as usize,
-                Err(e) => println!("Error {}", e),
+                Err(e) => panic!("{}", e)
             }
         }
     }
@@ -47,7 +46,7 @@ pub fn patch(offsets: &Vec<u64>, base_address: usize, pid: i32, val: u64) {
 }
 
 pub fn read(offsets: &Vec<u64>, base_address: usize, pid: i32) -> u64 {
-    let mut handle = (pid as Pid).try_into_process_handle().unwrap();
+    let handle = (pid as Pid).try_into_process_handle().unwrap();
     let mut current_address = base_address;
     let mut member: DataMember<u64> = DataMember::new(handle);
     for index in 0..offsets.len() {
@@ -55,7 +54,7 @@ pub fn read(offsets: &Vec<u64>, base_address: usize, pid: i32) -> u64 {
         unsafe {
             match member.read() {
                 Ok(value) => current_address = value as usize,
-                Err(e) => println!("Error {}", e),
+                Err(e) => panic!("{}", e),
             }
         }
     }
@@ -68,20 +67,23 @@ pub fn get_pid(process_name: String) -> i32 {
     let mut system = System::new_all();
     system.refresh_all();
 
-    let mut pid: i32 = 0;
+    let mut pid: i32 = -1;
     for process in system.processes_by_exact_name(&process_name) {
         pid = process.pid().as_u32() as i32;
+    }
+    if pid == -1 {
+        panic!("Pid not found! Try using sudo.")
     }
     println!("Target PID: {}", pid); 
     return pid;
 }
 
 pub fn get_base_pid(pid: i32) -> usize {
-    let mut base_address = 0;
+    let base_address;
 
     match get_base_address(pid) {
         Some(value) => base_address = value,
-        None => println!("Base address not found"),
+        None => panic!("Base address not found!"),
     }
     println!("Found base: {}", base_address);
     return base_address;
