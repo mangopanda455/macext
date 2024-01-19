@@ -4,11 +4,11 @@ use mach2::{vm_types::{vm_address_t, vm_size_t}, port::mach_port_t, traps::{task
 use process_memory::{Pid, TryIntoProcessHandle, DataMember, Memory};
 use sysinfo::System;
 
-pub fn get_base_address(pid: i32) -> Option<vm_address_t> {
+pub fn get_base_address(pid: i32) -> vm_address_t {
     unsafe {
         let mut task: mach_port_t = 0;
         if task_for_pid(mach_task_self(), pid, &mut task) != KERN_SUCCESS {
-            return None;
+            panic!("Error getting task!");
         }
 
         let mut address: vm_address_t = 1;
@@ -19,13 +19,13 @@ pub fn get_base_address(pid: i32) -> Option<vm_address_t> {
 
         while mach_vm_region(task, &mut address as *mut _ as *mut u64, &mut size as *mut _ as *mut u64, VM_REGION_BASIC_INFO_64, &mut info as *mut _ as *mut i32, &mut info_count, &mut object_name) == KERN_SUCCESS {
             if info.protection & VM_PROT_EXECUTE != 0 {
-                return Some(address);
+                return address;
             }
             address += size;
         }
     }
     
-    None
+    panic!("Base not found!")
 }
 
 pub fn patch(offsets: &Vec<u64>, base_address: usize, pid: i32, val: u64) {
@@ -78,19 +78,8 @@ pub fn get_pid(process_name: String) -> i32 {
     return pid;
 }
 
-pub fn get_base_pid(pid: i32) -> usize {
-    let base_address;
-
-    match get_base_address(pid) {
-        Some(value) => base_address = value,
-        None => panic!("Base address not found!"),
-    }
-    println!("Found base: {}", base_address);
-    return base_address;
-}
-
 pub fn fullprep(process_name: String) -> (i32, usize) {
     let pid = get_pid(process_name);
-    let base_address = get_base_pid(pid);
+    let base_address = get_base_address(pid);
     (pid, base_address)
 }
