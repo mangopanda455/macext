@@ -1,5 +1,4 @@
 use std::usize;
-
 use mach2::{vm_types::{vm_address_t, vm_size_t}, port::mach_port_t, traps::{task_for_pid, mach_task_self}, kern_return::KERN_SUCCESS, vm_region::{vm_region_basic_info, VM_REGION_BASIC_INFO_64}, message::mach_msg_type_number_t, vm::mach_vm_region, vm_prot::VM_PROT_EXECUTE};
 use process_memory::{Pid, TryIntoProcessHandle, DataMember, Memory};
 use sysinfo::System;
@@ -65,19 +64,19 @@ pub fn read(offsets: Vec<u64>, base_address: usize, pid: i32) -> u64 {
     }
 }
 
-pub fn get_pid() -> i32 {
+pub fn get_pid(process_name: String) -> i32 {
     let mut system = System::new_all();
     system.refresh_all();
 
     let mut pid: i32 = 0;
-    for process in system.processes_by_exact_name("assaultcube") {
+    for process in system.processes_by_exact_name(&process_name) {
         pid = process.pid().as_u32() as i32;
     }
     println!("Target PID: {}", pid); 
     return pid;
 }
 
-pub fn get_pid_ba(pid: i32) -> usize {
+pub fn get_base_pid(pid: i32) -> usize {
     let mut base_address = 0;
 
     match get_base_address(pid) {
@@ -88,3 +87,8 @@ pub fn get_pid_ba(pid: i32) -> usize {
     return base_address;
 }
 
+pub fn fullprep(process_name: String) -> (i32, usize) {
+    let pid = get_pid(process_name);
+    let base_address = get_base_pid(pid);
+    (pid, base_address)
+}
