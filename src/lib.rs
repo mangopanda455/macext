@@ -29,7 +29,7 @@ pub fn get_base_address(pid: i32) -> Option<vm_address_t> {
     None
 }
 
-pub fn patch(offsets: Vec<u64>, base_address: usize, pid: i32, val: u64) {
+pub fn patch(offsets: &Vec<u64>, base_address: usize, pid: i32, val: u64) {
     let mut handle = (pid as Pid).try_into_process_handle().unwrap();
     let mut current_address = base_address;
     let mut member: DataMember<u64> = DataMember::new(handle);
@@ -46,7 +46,7 @@ pub fn patch(offsets: Vec<u64>, base_address: usize, pid: i32, val: u64) {
     member.write(&val).unwrap();
 }
 
-pub fn read(offsets: Vec<u64>, base_address: usize, pid: i32) -> u64 {
+pub fn read(offsets: &Vec<u64>, base_address: usize, pid: i32) -> u64 {
     let mut handle = (pid as Pid).try_into_process_handle().unwrap();
     let mut current_address = base_address;
     let mut member: DataMember<u64> = DataMember::new(handle);
