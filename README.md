@@ -1,3 +1,7 @@
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/mangopanda455/macext/.github%2Fworkflows%2Frust.yml)
+![Crates.io](https://img.shields.io/crates/d/macext)
+![Crates.io](https://img.shields.io/crates/v/macext)
+
 # MacExt
 
 ## Mac memory management made simple through rust
@@ -13,11 +17,34 @@ fn main() {
     // Using fullprep:
     // let (pid, base_address) = fullprep("your_program")
     let offsets = vec![0x1d9ef0, 0x0, 0x418]; // Example offsets
-    let mut value = 0; // To store the value found at address
-    let final_value = 9999; // The value to write to address
+    let mut value: u64 = 0; // To store the value found at address
+    let final_value: u64 = 9999; // The value to write to address
 
     // Usage of read and patch
-    value = read(&offsets, base_address, pid);
-    patch(&offsets, base_address, pid, final_value);
+    value = read(&offsets, base_address, pid); // Returns a u64
+    patch(&offsets, base_address, pid, final_value); // Must patch in a u64
 }
+```
+
+### Running
+
+To access process memory, you must run the program as root.
+
+```bash
+sudo cargo run
+```
+
+### Installation
+
+Add the following to your `Cargo.toml` file:
+
+```toml
+[dependencies]
+macext = "0.1.6"
+```
+
+Or run the following command:
+
+```bash
+cargo add macext
 ```
