@@ -40,7 +40,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-macext = "0.1.6"
+macext = "0.1.9"
 ```
 
 Or run the following command:
