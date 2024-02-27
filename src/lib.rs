@@ -81,7 +81,7 @@ pub fn read(offsets: &Vec<u64>, base_address: usize, pid: i32) -> u64 {
     }
 }
 
-pub fn get_pid(process_name: String) -> i32 {
+pub fn get_pid(process_name: &str) -> i32 {
     let mut system = System::new_all();
     system.refresh_all();
 
@@ -96,7 +96,7 @@ pub fn get_pid(process_name: String) -> i32 {
     return pid;
 }
 
-pub fn fullprep(process_name: String) -> (i32, usize) {
+pub fn fullprep(process_name: &str) -> (i32, usize) {
     let pid = get_pid(process_name);
     let base_address = get_base_address(pid);
     (pid, base_address)
