@@ -51,4 +51,4 @@ cargo add macext
 
 [Crates.io](https://crates.io/crates/macext)
 
-[docs.rs](docs.rs/macext)
+[docs.rs](https://docs.rs/macext)
