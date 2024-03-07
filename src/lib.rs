@@ -182,7 +182,7 @@ extern "C" {
     ) -> i32;
 }
 
-fn list_regions(pid: i32) {
+pub fn list_regions(pid: i32) {
     unsafe {
         let mut task: mach_port_t = 0;
         if task_for_pid(mach_task_self(), pid, &mut task) != KERN_SUCCESS {
