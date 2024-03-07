@@ -49,7 +49,3 @@ Or run the following command:
 ```bash
 cargo add macext
 ```
-
-[Crates.io](https://crates.io/crates/macext)
-
-[docs.rs](https://docs.rs/macext)
