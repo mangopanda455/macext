@@ -42,7 +42,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-macext = "0.2.0"
+macext = "0.2.1"
 ```
 
 Or run the following command:
